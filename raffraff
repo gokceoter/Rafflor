@@ -20,8 +20,8 @@ contract NFTRaffle {
     ERC721 public nft;
 
     // Functions
-    function lockNFT(address _tokenId, uint256 _ticketPrice, uint256 _ticketCount, uint256 _endTimestamp) public {
-        require(msg.sender == nft.ownerOf(_tokenId));
+function lockNFT(address _tokenId, uint256 _ticketPrice, uint256 _ticketCount, uint256 _endTimestamp) public {
+        require(nft.ownerOf(bytes32(_tokenId)) == msg.sender);
         require(!nftLocked[_tokenId]);
         nftLocked[_tokenId] = true;
         nftToRaffle[_tokenId] = _tokenId;
