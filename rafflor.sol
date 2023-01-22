@@ -52,4 +52,30 @@ contract Raffle {
         // Require that the raffle has ended
         require(now >= raffles[raffleId].endTime, "Raffle has not ended yet");
         // Get the number of participants
-        uint256
+        uint256 participants = address(0).balance;
+for (address participant in raffles[raffleId].participants) {
+participants++;
+}
+// Pick a random winner
+uint256 winnerIndex = uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty))) % participants;
+address winner;
+for (address participant in raffles[raffleId].participants) {
+if (winnerIndex == 0) {
+winner = participant;
+break;
+}
+winnerIndex--;
+}
+// Transfer tokens to the winner
+for (uint256 i = 0; i < raffles[raffleId].tokens.length; i++) {
+// Get the token contract
+ERC20 token = ERC20(raffles[raffleId].tokens[i]);
+// Transfer the token to the winner
+token.transfer(winner, token.balanceOf(raffles[raffleId].owner));
+}
+// Remove the raffle from the mapping
+delete raffles[raffleId];
+// Emit the RaffleEnded event
+emit RaffleEnded(raffleId, winner);
+}
+}
